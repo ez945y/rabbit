@@ -1,6 +1,7 @@
 package ntutifm.game.rabbit
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -18,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ntutifm.game.rabbit.ui.theme.RabbitTheme
 
@@ -35,7 +37,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
+@Preview
+@Composable
+fun Preview1() {
+    Surface(modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background) {
+        Greeting()
+    }
+}
 @Composable
 fun Greeting() {
     Box(
@@ -52,8 +61,8 @@ fun Greeting() {
             alignment = Alignment.Center,
         )
         val dog1 = remember { mutableStateOf(1) }
-        val dog2 = remember { mutableStateOf(20) }
-        val dog3 = remember { mutableStateOf(22) }
+        val dog2 = remember { mutableStateOf(3) }
+        val dog3 = remember { mutableStateOf(5) }
         val rabbit = remember { mutableStateOf(41) }
         val current = remember { mutableStateOf(50) }
         val current2 = remember { mutableStateOf(50) }
@@ -68,6 +77,10 @@ fun Greeting() {
         val pic31 = remember { mutableStateOf(R.drawable.dot) }
         val pic32 = remember { mutableStateOf(R.drawable.dot) }
         val pic41 = remember { mutableStateOf(R.drawable.rabbit) }
+        val dogs = mutableListOf(
+            1,
+            3,
+            5)
         val pics = mutableListOf(
             pic01,
             pic01,
@@ -83,23 +96,6 @@ fun Greeting() {
             pic32,
             pic41,
             pic41)
-
-        if (current.value != dog1.value && current.value != dog2.value && current.value != dog2.value) {
-            pics[dog1.value.div(10) + dog1.value.mod(10)].value = R.drawable.dog
-            pics[dog2.value.div(10) + dog2.value.mod(10)].value = R.drawable.dog
-            pics[dog3.value.div(10) + dog3.value.mod(10)].value = R.drawable.dog
-        } else {
-            if (current.value == dog1.value) {
-                pics[dog1.value.div(10) + dog1.value.mod(10)].value = R.drawable.dogselect
-            }
-            if (current.value == dog2.value) {
-                pics[dog2.value.div(10) + dog2.value.mod(10)].value = R.drawable.dogselect
-            }
-            if(current.value == dog3.value){
-                pics[dog3.value.div(10)+dog3.value.mod(10)].value = R.drawable.dogselect
-            }
-        }
-
         val arr = arrayListOf(15,
             16,
             19,
@@ -148,25 +144,54 @@ fun Greeting() {
             -1,
             -1,
             -1)
-        fun movement(picNum: Int){
-            if (current.value != picNum && pic01.value == R.drawable.selected) {
+        if (current.value != dog1.value && current.value != dog2.value && current.value != dog3.value) {
+            pics[dog1.value].value = R.drawable.dog
+            pics[dog2.value].value = R.drawable.dog
+            pics[dog3.value].value = R.drawable.dog
+        } else {
+            if (current.value == dog1.value) {
+                pics[dog1.value].value = R.drawable.dogselect
+            }
+            if (current.value == dog2.value) {
+                pics[dog2.value].value = R.drawable.dogselect
+            }
+            if(current.value == dog3.value){
+                pics[dog3.value].value = R.drawable.dogselect
+            }
+        }
 
-                pics[current.value.div(10) + current.value.mod(10)].value = picNum
+        fun indexOf(array:MutableList<Int>,element:Int):Int{
+            array.indexOf(element)
+            return -1
+        }
+        fun movement(picNum: Int){
+            if (current.value != picNum && pics[picNum].value == R.drawable.selected) {
+                //if(current.value in dogs){
+                //    Log.d("mm","${dogs.indexOf(current.value)}")
+                //}
+                //dogs[dogs.indexOf(current.value)]= picNum
+                dog2.value = picNum
+                pics[current.value].value = R.drawable.dot
+                (arr[current.value]until arr[current.value+1]).forEach {
+                    if (pics[arr[it].div(10)*3 + arr[it].mod(10)].value == R.drawable.selected) {
+                        pics[arr[it].div(10)*3 + arr[it].mod(10)].value = R.drawable.dot //此處要查圖
+                    }
+                }
                 current.value = 50
             } else {
-                if (pic01.value == R.drawable.dog) {
+                if (pics[picNum].value == R.drawable.dog) {
                     current.value = picNum
                     (arr[picNum]until arr[picNum+1]).forEach {
-                        if (it != R.drawable.dog && it != R.drawable.rabbit) {
-                            pics[it.div(10).times(3) + it.mod(10)].value = R.drawable.selected //此處要查圖
+                        if (arr[it].div(10)*3 + arr[it].mod(10) != dog1.value && arr[it].div(10)*3 + arr[it].mod(10) != dog2.value && arr[it].div(10)*3 + arr[it].mod(10) != dog3.value && arr[it] != rabbit.value) {
+                            pics[arr[it].div(10)*3 + arr[it].mod(10)].value = R.drawable.selected //此處要查圖
                         }
                     }
                 } else {
-                    if (pic01.value == R.drawable.dogselect) {
+                    if (pics[picNum].value == R.drawable.dogselect) {
                         current.value = 50
                         (arr[picNum]until arr[picNum+1]).forEach {
-                            if (pics[it.div(10).times(3) + it.mod(10)].value == R.drawable.selected) {
-                                pics[it.div(10).times(3) + it.mod(10)].value = R.drawable.dot //此處要查圖
+                            if (pics[arr[it].div(10)*3 + arr[it].mod(10)].value == R.drawable.selected) {
+                                pics[arr[it].div(10)*3 + arr[it].mod(10)].value = R.drawable.dot //此處要查圖
                             }
                         }
                     }
@@ -196,7 +221,7 @@ fun Greeting() {
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(10)
+                        movement(3)
                     })
         }
         //4
@@ -208,7 +233,7 @@ fun Greeting() {
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(11)
+                        movement(4)
                     })
 
         }
@@ -221,7 +246,7 @@ fun Greeting() {
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(12)
+                        movement(5)
                     })
         }
 
@@ -234,7 +259,7 @@ fun Greeting() {
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(20)
+                        movement(6)
                     })
         }
         //7
@@ -246,7 +271,7 @@ fun Greeting() {
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(21)
+                        movement(7)
                     })
         }
         //8
@@ -258,7 +283,7 @@ fun Greeting() {
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(22)
+                        movement(8)
                     })
         }
         //9
@@ -270,7 +295,7 @@ fun Greeting() {
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(30)
+                        movement(9)
                     })
         }
         //10
@@ -282,7 +307,7 @@ fun Greeting() {
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(31)
+                        movement(10)
                     })
         }
         //11
@@ -294,7 +319,7 @@ fun Greeting() {
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(32)
+                        movement(11)
                     })
         }
         //13
@@ -306,7 +331,7 @@ fun Greeting() {
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(41)
+                        movement(13)
                     })
         }
     }
