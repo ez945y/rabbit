@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -55,139 +54,161 @@ fun Greeting() {
         val dog1 = remember { mutableStateOf(1) }
         val dog2 = remember { mutableStateOf(20) }
         val dog3 = remember { mutableStateOf(22) }
-        val pic1 = remember { mutableStateOf(R.drawable.dog) }
-        val pic3 = remember { mutableStateOf(R.drawable.dog) }
-        val pic4 = remember { mutableStateOf(R.drawable.dot) }
-        val pic5 = remember { mutableStateOf(R.drawable.dog) }
-        val pic6 = remember { mutableStateOf(R.drawable.dot) }
-        val pic7 = remember { mutableStateOf(R.drawable.dot) }
-        val pic8 = remember { mutableStateOf(R.drawable.dot) }
-        val pic9 = remember { mutableStateOf(R.drawable.dot) }
-        val pic10 = remember { mutableStateOf(R.drawable.dot) }
+        val rabbit = remember { mutableStateOf(41) }
+        val current = remember { mutableStateOf(50) }
+        val current2 = remember { mutableStateOf(50) }
+        val pic01 = remember { mutableStateOf(R.drawable.dog) }
+        val pic10 = remember { mutableStateOf(R.drawable.dog) }
         val pic11 = remember { mutableStateOf(R.drawable.dot) }
-        val pic13 = remember { mutableStateOf(R.drawable.rabbit) }
-        var temp = remember { mutableStateOf(pic1) }
-        var lis = mutableListOf(pic1, pic4, pic6, pic7)
+        val pic12 = remember { mutableStateOf(R.drawable.dog) }
+        val pic20 = remember { mutableStateOf(R.drawable.dot) }
+        val pic21 = remember { mutableStateOf(R.drawable.dot) }
+        val pic22 = remember { mutableStateOf(R.drawable.dot) }
+        val pic30 = remember { mutableStateOf(R.drawable.dot) }
+        val pic31 = remember { mutableStateOf(R.drawable.dot) }
+        val pic32 = remember { mutableStateOf(R.drawable.dot) }
+        val pic41 = remember { mutableStateOf(R.drawable.rabbit) }
+        val pics = mutableListOf(
+            pic01,
+            pic01,
+            pic01,
+            pic10,
+            pic11,
+            pic12,
+            pic20,
+            pic21,
+            pic22,
+            pic30,
+            pic31,
+            pic32,
+            pic41,
+            pic41)
+
+        if (current.value != dog1.value && current.value != dog2.value && current.value != dog2.value) {
+            pics[dog1.value.div(10) + dog1.value.mod(10)].value = R.drawable.dog
+            pics[dog2.value.div(10) + dog2.value.mod(10)].value = R.drawable.dog
+            pics[dog3.value.div(10) + dog3.value.mod(10)].value = R.drawable.dog
+        } else {
+            if (current.value == dog1.value) {
+                pics[dog1.value.div(10) + dog1.value.mod(10)].value = R.drawable.dogselect
+            }
+            if (current.value == dog2.value) {
+                pics[dog2.value.div(10) + dog2.value.mod(10)].value = R.drawable.dogselect
+            }
+            if(current.value == dog3.value){
+                pics[dog3.value.div(10)+dog3.value.mod(10)].value = R.drawable.dogselect
+            }
+        }
+
+        val arr = arrayListOf(15,
+            16,
+            19,
+            20,
+            23,
+            26,
+            29,
+            31,
+            36,
+            38,
+            40,
+            43,
+            45,
+            46,
+            47,
+            -1,
+            10,
+            11,
+            12,
+            -1,
+            11,
+            20,
+            21,
+            10,
+            12,
+            21,
+            11,
+            21,
+            22,
+            21,
+            30,
+            20,
+            22,
+            30,
+            31,
+            32,
+            21,
+            32,
+            31,
+            41,
+            30,
+            32,
+            41,
+            31,
+            41,
+            -1,
+            -1,
+            -1)
+        fun movement(picNum: Int){
+            if (current.value != picNum && pic01.value == R.drawable.selected) {
+
+                pics[current.value.div(10) + current.value.mod(10)].value = picNum
+                current.value = 50
+            } else {
+                if (pic01.value == R.drawable.dog) {
+                    current.value = picNum
+                    (arr[picNum]until arr[picNum+1]).forEach {
+                        if (it != R.drawable.dog && it != R.drawable.rabbit) {
+                            pics[it.div(10).times(3) + it.mod(10)].value = R.drawable.selected //此處要查圖
+                        }
+                    }
+                } else {
+                    if (pic01.value == R.drawable.dogselect) {
+                        current.value = 50
+                        (arr[picNum]until arr[picNum+1]).forEach {
+                            if (pics[it.div(10).times(3) + it.mod(10)].value == R.drawable.selected) {
+                                pics[it.div(10).times(3) + it.mod(10)].value = R.drawable.dot //此處要查圖
+                            }
+                        }
+                    }
+                }
+            }
+        }
         //1
         Box(modifier = Modifier
             .padding(top = 599.dp, start = 160.dp)
             .size(80.dp)
         )
         {
-            Image(painterResource(id = pic1.value),
+            Image(painterResource(id = pic01.value),
                 null,
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        if (temp != pic1 && pic1.value == R.drawable.selected) {
-                            pic1.value = R.drawable.dog
-                            temp.value.value = R.drawable.dot
-                            lis.forEach {
-                                if (it.value == R.drawable.selected) {
-                                    it.value = R.drawable.dot
-                                }
-                            }
-                        } else {
-                            lis = mutableListOf(pic3, pic4, pic5)
-                            if (pic1.value == R.drawable.dog) {
-                                pic1.value = R.drawable.dogselect
-                                lis.forEach {
-                                    if (it.value != R.drawable.dog && it.value != R.drawable.rabbit) {
-                                        it.value = R.drawable.selected //此處要查圖
-                                    }
-                                }
-                                temp.value = pic1
-                            } else {
-                                if (pic1.value == R.drawable.dogselect) {
-                                    pic1.value = R.drawable.dog
-                                    lis.forEach {
-                                        if (it.value == R.drawable.selected) {
-                                            it.value = R.drawable.dot //此處要查圖
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        movement(1)
                     })
         }
         //3
         Box(modifier = Modifier
             .padding(top = 480.dp, start = 271.dp)
             .size(80.dp)) {
-            Image(painterResource(id = pic3.value),
+            Image(painterResource(id = pic10.value),
                 null,
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        if (temp != pic3 && pic3.value == R.drawable.selected) {
-                            pic3.value = R.drawable.dog
-                            temp.value.value = R.drawable.dot
-                            lis.forEach {
-                                if (it.value == R.drawable.selected) {
-                                    it.value = R.drawable.dot //此處要查圖
-                                }
-                            }
-                        } else {
-                            lis = mutableListOf(pic1, pic4, pic6, pic7)
-                            if (pic3.value == R.drawable.dog) {
-                                pic3.value = R.drawable.dogselect
-                                lis.forEach {
-                                    if (it.value != R.drawable.dog && it.value != R.drawable.rabbit) {
-                                        it.value = R.drawable.selected //此處要查圖
-                                    }
-                                }
-                                temp.value = pic3
-                            } else {
-                                if (pic3.value == R.drawable.dogselect) {
-                                    pic3.value = R.drawable.dog
-                                    lis.forEach {
-                                        if (it.value == R.drawable.selected) {
-                                            it.value = R.drawable.dot //此處要查圖
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        movement(10)
                     })
         }
         //4
         Box(modifier = Modifier
             .padding(top = 480.dp, start = 160.dp)
             .size(80.dp)) {
-            Image(painterResource(id = pic4.value),
+            Image(painterResource(id = pic11.value),
                 null,
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        if (temp != pic4 && pic4.value == R.drawable.selected) {
-                            pic4.value = R.drawable.dog
-                            temp.value.value = R.drawable.dot
-                            lis.forEach {
-                                if (it.value == R.drawable.selected) {
-                                    it.value = R.drawable.dot
-                                }
-                            }
-                        } else {
-                            lis = mutableListOf(pic1, pic3, pic5, pic7)
-                            if (pic4.value == R.drawable.dog) {
-                                pic4.value = R.drawable.dogselect
-                                lis.forEach {
-                                    if (it.value != R.drawable.dog && it.value != R.drawable.rabbit) {
-                                        it.value = R.drawable.selected //此處要查圖
-                                    }
-                                }
-                                temp.value = pic4
-                            } else {
-                                if (pic4.value == R.drawable.dogselect) {
-                                    pic4.value = R.drawable.dog
-                                    lis.forEach {
-                                        if (it.value == R.drawable.selected) {
-                                            it.value = R.drawable.dot //此處要查圖
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        movement(11)
                     })
 
         }
@@ -195,156 +216,97 @@ fun Greeting() {
         Box(modifier = Modifier
             .padding(top = 480.dp, start = 44.dp)
             .size(80.dp)) {
-            Image(painterResource(id = pic5.value),
+            Image(painterResource(id = pic12.value),
                 null,
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        if (temp != pic5 && pic5.value == R.drawable.selected) {
-                            pic5.value = R.drawable.dog
-                            temp.value.value = R.drawable.dot
-                            lis.forEach {
-                                if (it.value == R.drawable.selected) {
-                                    it.value = R.drawable.dot
-                                }
-                            }
-                        } else {
-                            lis = mutableListOf(pic1, pic4, pic7, pic8)
-                            if (pic5.value == R.drawable.dog) {
-                                pic5.value = R.drawable.dogselect
-                                lis.forEach {
-                                    if (it.value != R.drawable.dog && it.value != R.drawable.rabbit) {
-                                        it.value = R.drawable.selected //此處要查圖
-                                    }
-                                }
-                                temp.value = pic5
-                            } else {
-                                if (pic5.value == R.drawable.dogselect) {
-                                    pic5.value = R.drawable.dog
-                                    lis.forEach {
-                                        if (it.value == R.drawable.selected) {
-                                            it.value = R.drawable.dot //此處要查圖
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        movement(12)
                     })
         }
-        fun movement(pic: MutableState<Int>): Unit {
-            if (temp != pic && pic.value == R.drawable.selected) {
-                pic.value = R.drawable.dog
-                temp.value.value = R.drawable.dot
-                lis.forEach {
-                    if (it.value == R.drawable.selected) {
-                        it.value = R.drawable.dot
-                    }
-                }
 
-            } else {
-                lis = mutableListOf(pic1, pic4, pic7, pic8)
-                if (pic.value == R.drawable.dog) {
-                    pic.value = R.drawable.dogselect
-                    lis.forEach {
-                        if (it.value != R.drawable.dog && it.value != R.drawable.rabbit) {
-                            it.value = R.drawable.selected //此處要查圖
-                        }
-                    }
-                    temp.value = pic
-                } else {
-                    if (pic.value == R.drawable.dogselect) {
-                        pic.value = R.drawable.dog
-                        lis.forEach {
-                            if (it.value == R.drawable.selected) {
-                                it.value = R.drawable.dot //此處要查圖
-                            }
-                        }
-                    }
-                }
-            }
-        }
         //6
         Box(modifier = Modifier
             .padding(top = 361.dp, start = 271.dp)
             .size(80.dp)) {
-            Image(painterResource(id = pic6.value),
+            Image(painterResource(id = pic20.value),
                 null,
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(pic6)
+                        movement(20)
                     })
         }
         //7
         Box(modifier = Modifier
             .padding(top = 361.dp, start = 161.dp)
             .size(75.dp)) {
-            Image(painterResource(id = pic7.value),
+            Image(painterResource(id = pic21.value),
                 null,
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(pic7)
+                        movement(21)
                     })
         }
         //8
         Box(modifier = Modifier
             .padding(top = 361.dp, start = 44.dp)
             .size(80.dp)) {
-            Image(painterResource(id = pic8.value),
+            Image(painterResource(id = pic22.value),
                 null,
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(pic8)
+                        movement(22)
                     })
         }
         //9
         Box(modifier = Modifier
             .padding(top = 242.dp, start = 271.dp)
             .size(80.dp)) {
-            Image(painterResource(id = pic9.value),
+            Image(painterResource(id = pic30.value),
                 null,
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(pic9)
+                        movement(30)
                     })
         }
         //10
         Box(modifier = Modifier
             .padding(top = 242.dp, start = 161.dp)
             .size(80.dp)) {
-            Image(painterResource(id = pic10.value),
+            Image(painterResource(id = pic31.value),
                 null,
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(pic10)
+                        movement(31)
                     })
         }
         //11
         Box(modifier = Modifier
             .padding(top = 242.dp, start = 43.dp)
             .size(80.dp)) {
-            Image(painterResource(id = pic11.value),
+            Image(painterResource(id = pic32.value),
                 null,
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(pic11)
+                        movement(32)
                     })
         }
         //13
         Box(modifier = Modifier
             .padding(top = 120.dp, start = 161.dp)
             .size(80.dp)) {
-            Image(painterResource(id = pic13.value),
+            Image(painterResource(id = pic41.value),
                 null,
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        movement(pic13)
+                        movement(41)
                     })
         }
     }
