@@ -5,6 +5,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +26,7 @@ fun PlayDog(navController: NavController) {
     var timer = remember { mutableStateOf("倒數 10秒") }
     val second = remember { mutableStateOf(10) }
     val flag = remember { mutableStateOf(true) }
+    val showAlertDialog = remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -235,9 +238,9 @@ fun PlayDog(navController: NavController) {
                             2 -> dog3.value = picNum
                         }
                         dogs[dogs.indexOf(current.value)] = picNum
-                        Log.e("mm", "${dogs}")
                         if ((dogs.indexOf(9) > -1 && dogs.indexOf(10) > -1 && dogs.indexOf(11) > -1)) {
                             Log.e("mm", "DogWIN")
+                            showAlertDialog.value = true
                         }
                         pics[current.value].value = R.drawable.dot
                         re()
@@ -416,6 +419,31 @@ fun PlayDog(navController: NavController) {
                 .padding(top = 4.dp, start = 5.dp, end = 5.dp)
                 .size(22.dp))
             Text("悔棋")
+        }
+        if (showAlertDialog.value) {
+            AlertDialog(
+                onDismissRequest = {
+                    showAlertDialog.value = false
+                },
+                title = {
+                    Text("結束",Modifier.padding(start = 80.dp))
+                },
+                text = {
+                    Text("遊戲結束",Modifier.padding(start = 70.dp))
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showAlertDialog.value = false
+                            navController.popBackStack()
+                        },
+                        modifier = Modifier.padding(end = 80.dp)
+                    )
+                    {
+                        Text(text = "確認")
+                    }
+                },
+            )
         }
     }
 }

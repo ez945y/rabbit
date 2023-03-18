@@ -5,6 +5,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +27,7 @@ fun PlayTwo(navController: NavController) {
     var timer = remember { mutableStateOf("倒數 10秒") }
     val second = remember { mutableStateOf(10) }
     val flag = remember { mutableStateOf(true) }
-    val regret = 
+    val showAlertDialog = remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -241,6 +243,7 @@ fun PlayTwo(navController: NavController) {
                         Log.e("mm", "${dogs}")
                         if ((dogs.indexOf(9) > -1 && dogs.indexOf(10) > -1 && dogs.indexOf(11) > -1)) {
                             Log.e("mm", "DogWIN")
+                            showAlertDialog.value = true
                         }
                         pics[current.value].value = R.drawable.dot
                         re()
@@ -270,6 +273,7 @@ fun PlayTwo(navController: NavController) {
                         rabbit.value = picNum
                         if (rabbit.value <= dogs.sum().div(3)) {
                             Log.e("mm", "RabbitWIN")
+                            showAlertDialog.value = true
                         }
                         pics[current2.value].value = R.drawable.dot
                         re()
@@ -431,6 +435,31 @@ fun PlayTwo(navController: NavController) {
                         .clickable {
                             movement(13)
                         })
+            }
+            if (showAlertDialog.value) {
+                AlertDialog(
+                    onDismissRequest = {
+                        showAlertDialog.value = false
+                    },
+                    title = {
+                        Text("結束",Modifier.padding(start = 80.dp))
+                    },
+                    text = {
+                        Text("遊戲結束",Modifier.padding(start = 70.dp))
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                showAlertDialog.value = false
+                                navController.popBackStack()
+                            },
+                            modifier = Modifier.padding(end = 80.dp)
+                        )
+                        {
+                            Text(text = "確認")
+                        }
+                    },
+                )
             }
         }
         Row(Modifier.padding(start = 40.dp, top = 70.dp)) {
