@@ -22,8 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ntutifm.game.rabbit.ui.theme.RabbitTheme
-import java.util.ArrayDeque
-
 
 
 class MainActivity : ComponentActivity() {
@@ -34,7 +32,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background) {
-                    Greeting()
+                    PlayTwo()
                 }
             }
         }
@@ -45,22 +43,21 @@ class MainActivity : ComponentActivity() {
 fun Preview1() {
     Surface(modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background) {
-        Greeting()
+        PlayTwo()
     }
 }
 @Composable
-fun Greeting() {
+fun PlayTwo() {
     Box(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
             .fillMaxSize()
     ) {
-
         Image(
             painterResource(id = R.drawable.background), null,
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .fillMaxSize(),
+                .size(500.dp, 1000.dp),
             alignment = Alignment.Center,
         )
         val dog1 = remember { mutableStateOf(1) }
@@ -84,6 +81,7 @@ fun Greeting() {
             dog1.value,
             dog2.value,
             dog3.value)
+
         val pics = mutableListOf(
             pic01,
             pic01,
@@ -166,11 +164,7 @@ fun Greeting() {
                 item.value = R.drawable.rabbit
             }}
         }
-        fun indexOf(array:MutableList<Int>,element:Int):Int{
-            array.indexOf(element)
-            return -1
-        }
-        var flag = remember{ mutableStateOf(true)}
+        val flag = remember{ mutableStateOf(true)}
         fun movement(picNum: Int){
 
             if(flag.value){ //狗子
@@ -181,7 +175,10 @@ fun Greeting() {
                         2 -> dog3.value = picNum
                     }
                     dogs[dogs.indexOf(current.value)]= picNum
-
+                    Log.e("mm","${dogs}")
+                    if((dogs.indexOf(9) > -1 && dogs.indexOf(10) > -1 && dogs.indexOf(11) > -1)){
+                        Log.e("mm","DogWIN")
+                    }
                     pics[current.value].value = R.drawable.dot
                     re()
                     current.value = 50
@@ -191,7 +188,7 @@ fun Greeting() {
                         current.value = picNum
                         re()
                         (arrD[picNum]until arrD[picNum+1]).forEach {
-                            var linkPoint = arrD[it].div(10)*3 + arrD[it].mod(10)
+                            val linkPoint = arrD[it].div(10)* 3 + arrD[it].mod(10)
     //                        stack.push(linkPoint)
                             if (dogs.indexOf(linkPoint) < 0 && linkPoint != rabbit.value) {
                                 pics[linkPoint].value = R.drawable.selected //此處要查圖
@@ -208,6 +205,9 @@ fun Greeting() {
             }else { //兔子
                 if (current2.value != picNum && pics[picNum].value == R.drawable.selected) {
                     rabbit.value = picNum
+                    if(rabbit.value <= dogs.sum().div(3)){
+                        Log.e("mm","RabbitWIN")
+                    }
                     pics[current2.value].value = R.drawable.dot
                     re()
                     current2.value = 50
@@ -217,7 +217,7 @@ fun Greeting() {
                         current2.value = picNum
                         re()
                         (arrR[picNum]until arrR[picNum+1]).forEach {
-                            var linkPoint = arrR[it].div(10)*3 + arrR[it].mod(10)
+                            val linkPoint = arrR[it].div(10)*3 + arrR[it].mod(10)
                             //                        stack.push(linkPoint)
                             if (dogs.indexOf(linkPoint) < 0 && linkPoint != rabbit.value) {
                                 pics[linkPoint].value = R.drawable.selected //此處要查圖
@@ -231,9 +231,6 @@ fun Greeting() {
                         }
                     }
                 }
-            }
-            if((dogs[0]+dogs[1]+dogs[2]).div(10).div(3) < rabbit.value - 1){
-                //Rabbit win
             }
         }
         //1
