@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ntutifm.game.rabbit.R
+import java.util.ArrayDeque
 
 @Composable
 fun PlayDog(navController: NavController) {
@@ -27,6 +28,108 @@ fun PlayDog(navController: NavController) {
     val second = remember { mutableStateOf(10) }
     val flag = remember { mutableStateOf(true) }
     val showAlertDialog = remember { mutableStateOf(false) }
+    val stack = remember { ArrayDeque<Int>() }
+    val stackD = remember { ArrayDeque<Int>() }
+    val dog1 = remember { mutableStateOf(1) }
+    val dog2 = remember { mutableStateOf(3) }
+    val dog3 = remember { mutableStateOf(5) }
+    val rabbit = remember { mutableStateOf(13) }
+    val current = remember { mutableStateOf(50) }
+    val sameMove = remember { mutableStateOf(0) }
+    val pic01 = remember { mutableStateOf(R.drawable.dog) }
+    val pic10 = remember { mutableStateOf(R.drawable.dog) }
+    val pic11 = remember { mutableStateOf(R.drawable.dot) }
+    val pic12 = remember { mutableStateOf(R.drawable.dog) }
+    val pic20 = remember { mutableStateOf(R.drawable.dot) }
+    val pic21 = remember { mutableStateOf(R.drawable.dot) }
+    val pic22 = remember { mutableStateOf(R.drawable.dot) }
+    val pic30 = remember { mutableStateOf(R.drawable.dot) }
+    val pic31 = remember { mutableStateOf(R.drawable.dot) }
+    val pic32 = remember { mutableStateOf(R.drawable.dot) }
+    val pic41 = remember { mutableStateOf(R.drawable.rabbit) }
+    val winP = remember { mutableStateOf("") }
+    val dogs = arrayListOf(
+        dog1.value,
+        dog2.value,
+        dog3.value
+    )
+
+    val pics = mutableListOf(
+        pic01,
+        pic01,
+        pic01,
+        pic10,
+        pic11,
+        pic12,
+        pic20,
+        pic21,
+        pic22,
+        pic30,
+        pic31,
+        pic32,
+        pic41,
+        pic41
+    )
+    val arrD = arrayListOf(
+        15,
+        16,
+        19,
+        20,
+        23,
+        26,
+        29,
+        31,
+        36,
+        38,
+        40,
+        43,
+        45,
+        46,
+        47,
+        -1,
+        10,
+        11,
+        12,
+        -1,
+        11,
+        20,
+        21,
+        10,
+        12,
+        21,
+        11,
+        21,
+        22,
+        21,
+        30,
+        20,
+        22,
+        30,
+        31,
+        32,
+        21,
+        32,
+        31,
+        41,
+        30,
+        32,
+        41,
+        31,
+        41,
+        -1,
+        -1,
+        -1
+    )
+    fun re() {
+        for (item in pics) {
+            when(item.value){
+                R.drawable.selected -> item.value = R.drawable.dot
+                R.drawable.dogselect -> item.value = R.drawable.dog
+                R.drawable.rabbitselect -> item.value = R.drawable.rabbit
+            }
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -45,152 +148,6 @@ fun PlayDog(navController: NavController) {
                     .padding(top = 50.dp),
                 alignment = Alignment.Center,
             )
-            val dog1 = remember { mutableStateOf(1) }
-            val dog2 = remember { mutableStateOf(3) }
-            val dog3 = remember { mutableStateOf(5) }
-            val rabbit = remember { mutableStateOf(13) }
-            val current = remember { mutableStateOf(50) }
-            val current2 = remember { mutableStateOf(50) }
-            val pic01 = remember { mutableStateOf(R.drawable.dog) }
-            val pic10 = remember { mutableStateOf(R.drawable.dog) }
-            val pic11 = remember { mutableStateOf(R.drawable.dot) }
-            val pic12 = remember { mutableStateOf(R.drawable.dog) }
-            val pic20 = remember { mutableStateOf(R.drawable.dot) }
-            val pic21 = remember { mutableStateOf(R.drawable.dot) }
-            val pic22 = remember { mutableStateOf(R.drawable.dot) }
-            val pic30 = remember { mutableStateOf(R.drawable.dot) }
-            val pic31 = remember { mutableStateOf(R.drawable.dot) }
-            val pic32 = remember { mutableStateOf(R.drawable.dot) }
-            val pic41 = remember { mutableStateOf(R.drawable.rabbit) }
-            val dogs = arrayListOf(
-                dog1.value,
-                dog2.value,
-                dog3.value)
-
-            val pics = mutableListOf(
-                pic01,
-                pic01,
-                pic01,
-                pic10,
-                pic11,
-                pic12,
-                pic20,
-                pic21,
-                pic22,
-                pic30,
-                pic31,
-                pic32,
-                pic41,
-                pic41)
-            val arrD = arrayListOf(15,
-                16,
-                19,
-                20,
-                23,
-                26,
-                29,
-                31,
-                36,
-                38,
-                40,
-                43,
-                45,
-                46,
-                47,
-                -1,
-                10,
-                11,
-                12,
-                -1,
-                11,
-                20,
-                21,
-                10,
-                12,
-                21,
-                11,
-                21,
-                22,
-                21,
-                30,
-                20,
-                22,
-                30,
-                31,
-                32,
-                21,
-                32,
-                31,
-                41,
-                30,
-                32,
-                41,
-                31,
-                41,
-                -1,
-                -1,
-                -1)
-            val arrR = arrayListOf(15,
-                16,
-                17,
-                18,
-                22,
-                26,
-                30,
-                33,
-                41,
-                44,
-                48,
-                52,
-                56,
-                57,
-                60,
-                -1,
-                -1,
-                -1,
-                20,
-                21,
-                11,
-                1,
-                21,
-                10,
-                12,
-                1,
-                21,
-                22,
-                11,
-                1,
-                30,
-                21,
-                10,
-                30,
-                31,
-                32,
-                20,
-                22,
-                10,
-                11,
-                12,
-                32,
-                21,
-                12,
-                41,
-                31,
-                20,
-                21,
-                41,
-                30,
-                32,
-                21,
-                41,
-                31,
-                21,
-                22,
-                -1,
-                30,
-                31,
-                32,
-                -1)
 
             if (current.value != dog1.value && current.value != dog2.value && current.value != dog3.value) {
                 pics[dog1.value].value = R.drawable.dog
@@ -207,39 +164,54 @@ fun PlayDog(navController: NavController) {
                     pics[dog3.value].value = R.drawable.dogselect
                 }
             }
-            if (current2.value != rabbit.value) {
-                pics[rabbit.value].value = R.drawable.rabbit
-            } else {
-                if (current2.value == rabbit.value) {
-                    pics[rabbit.value].value = R.drawable.rabbitselect
-                }
-            }
 
-            fun re() {
-                for (item in pics) {
-                    if (item.value == R.drawable.selected) {
-                        item.value = R.drawable.dot
-                    }
-                    if (item.value == R.drawable.dogselect) {
-                        item.value = R.drawable.dog
-                    }
-                    if (item.value == R.drawable.rabbitselect) {
-                        item.value = R.drawable.rabbit
-                    }
-                }
-            }
+            pics[rabbit.value].value = R.drawable.rabbit
 
+            if (!flag.value) {
+                var board = arrayListOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                board[dogs[0]] = 1
+                board[dogs[1]] = 1
+                board[dogs[2]] = 1
+                board[rabbit.value] = 2
+                Log.e("mm","$board")
+                val pre = board.indexOf(2)
+                rabbit.value = findMoveR(board)
+                pics[pre].value = R.drawable.dot
+                Log.e("mm","${board}")
+                stack.push(rabbit.value)
+                if (rabbit.value.div(3) < dog1.value.div(3) ||
+                    rabbit.value.div(3) < dog2.value.div(3) ||
+                    rabbit.value.div(3) < dog3.value.div(3) ||
+                    rabbit.value == 1) {
+                    Log.e("mm", "RabbitWIN")
+                    winP.value = "Rabbit Win"
+                    showAlertDialog.value = true
+                }
+                flag.value = true
+            }
             fun movement(picNum: Int) {
                 if (flag.value) { //狗子
                     if (current.value != picNum && pics[picNum].value == R.drawable.selected) {
+                        if(stack.indexOf(picNum) == 1){
+                            sameMove.value++
+                            if (sameMove.value == 9){
+                                winP.value = "Rabbit Win"
+                                showAlertDialog.value = true
+                            }
+                        }else{
+                            sameMove.value = 0
+                        }
+                        stack.push(dogs[dogs.indexOf(current.value)])
                         when (dogs.indexOf(current.value)) {
                             0 -> dog1.value = picNum
                             1 -> dog2.value = picNum
                             2 -> dog3.value = picNum
                         }
                         dogs[dogs.indexOf(current.value)] = picNum
+                        stackD.push(dogs[dogs.indexOf(picNum)])
                         if ((dogs.indexOf(9) > -1 && dogs.indexOf(10) > -1 && dogs.indexOf(11) > -1)) {
                             Log.e("mm", "DogWIN")
+                            winP.value = "Dog Win"
                             showAlertDialog.value = true
                         }
                         pics[current.value].value = R.drawable.dot
@@ -417,8 +389,30 @@ fun PlayDog(navController: NavController) {
             Text(timer.value, modifier = Modifier.clickable {})
             Image(painterResource(id = R.drawable.backround), null, modifier = Modifier
                 .padding(top = 4.dp, start = 5.dp, end = 5.dp)
-                .size(22.dp))
-            Text("悔棋")
+                .size(22.dp)
+                .clickable {})
+            Text("悔棋",modifier = Modifier.clickable {
+                if (!stack.isEmpty()) {
+                    var before = stack.pop()
+                    if (flag.value) {
+                        pics[rabbit.value].value = R.drawable.dot
+                        rabbit.value = before
+                        flag.value = false
+                    } else {
+                        var after = stackD.pop()
+                        pics[dogs[dogs.indexOf(after)]].value = R.drawable.dot
+                        when (dogs.indexOf(after)) {
+                            0 -> dog1.value = before
+                            1 -> dog2.value = before
+                            2 -> dog3.value = before
+                        }
+                        dogs[dogs.indexOf(after)] = before
+                        flag.value = true
+                    }
+                    current.value = 50
+                    re()
+                }
+            })
         }
         if (showAlertDialog.value) {
             AlertDialog(
