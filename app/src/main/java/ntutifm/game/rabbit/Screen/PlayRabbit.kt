@@ -24,8 +24,6 @@ import java.util.ArrayDeque
 fun PlayRabbit(navController: NavController) {
     val height = remember { mutableStateOf(790.dp) }
     val weight = remember { mutableStateOf(395.dp) }
-    var timer = remember { mutableStateOf("倒數 10秒") }
-    val second = remember { mutableStateOf(10) }
     val flag = remember { mutableStateOf(true) }
     val showAlertDialog = remember { mutableStateOf(false) }
     val dog1 = remember { mutableStateOf(1) }
@@ -69,67 +67,6 @@ fun PlayRabbit(navController: NavController) {
         pic41,
         pic41)
 
-    val arrR = arrayListOf(15,
-        16,
-        17,
-        18,
-        22,
-        26,
-        30,
-        33,
-        41,
-        44,
-        48,
-        52,
-        56,
-        57,
-        60,
-        -1,
-        -1,
-        -1,
-        20,
-        21,
-        11,
-        1,
-        21,
-        10,
-        12,
-        1,
-        21,
-        22,
-        11,
-        1,
-        30,
-        21,
-        10,
-        30,
-        31,
-        32,
-        20,
-        22,
-        10,
-        11,
-        12,
-        32,
-        21,
-        12,
-        41,
-        31,
-        20,
-        21,
-        41,
-        30,
-        32,
-        21,
-        41,
-        31,
-        21,
-        22,
-        -1,
-        30,
-        31,
-        32,
-        -1)
     fun re() {
         for (item in pics) {
             if (item.value == R.drawable.selected) {

@@ -24,8 +24,6 @@ import java.util.ArrayDeque
 fun PlayDog(navController: NavController) {
     val height = remember { mutableStateOf(790.dp) }
     val weight = remember { mutableStateOf(395.dp) }
-    var timer = remember { mutableStateOf("倒數 10秒") }
-    val second = remember { mutableStateOf(10) }
     val flag = remember { mutableStateOf(true) }
     val showAlertDialog = remember { mutableStateOf(false) }
     val stack = remember { ArrayDeque<Int>() }
@@ -69,56 +67,6 @@ fun PlayDog(navController: NavController) {
         pic32,
         pic41,
         pic41
-    )
-    val arrD = arrayListOf(
-        15,
-        16,
-        19,
-        20,
-        23,
-        26,
-        29,
-        31,
-        36,
-        38,
-        40,
-        43,
-        45,
-        46,
-        47,
-        -1,
-        10,
-        11,
-        12,
-        -1,
-        11,
-        20,
-        21,
-        10,
-        12,
-        21,
-        11,
-        21,
-        22,
-        21,
-        30,
-        20,
-        22,
-        30,
-        31,
-        32,
-        21,
-        32,
-        31,
-        41,
-        30,
-        32,
-        41,
-        31,
-        41,
-        -1,
-        -1,
-        -1
     )
     fun re() {
         for (item in pics) {

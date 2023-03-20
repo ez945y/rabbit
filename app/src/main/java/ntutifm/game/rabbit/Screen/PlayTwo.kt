@@ -13,21 +13,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import kotlinx.coroutines.launch
 import ntutifm.game.rabbit.R
-import java.lang.Integer.max
-import java.lang.Integer.min
-import java.util.ArrayDeque
-import kotlin.Int.Companion.MAX_VALUE
-import kotlin.Int.Companion.MIN_VALUE
-import kotlin.concurrent.thread
-import kotlin.system.exitProcess
+import java.util.*
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -35,8 +27,6 @@ import kotlin.system.exitProcess
 fun PlayTwo(navController: NavController) {
     val height = remember { mutableStateOf(790.dp) }
     val weight = remember { mutableStateOf(395.dp) }
-    var timer = remember { mutableStateOf("倒數 10秒") }
-    val second = remember { mutableStateOf(10) }
     val flag = remember { mutableStateOf(true) }
     val showAlertDialog = remember { mutableStateOf(false) }
     val stack = remember { ArrayDeque<Int>() }
@@ -82,120 +72,6 @@ fun PlayTwo(navController: NavController) {
         pic41,
         pic41
     )
-    val arrD = arrayListOf(
-        15,
-        16,
-        19,
-        20,
-        23,
-        26,
-        29,
-        31,
-        36,
-        38,
-        40,
-        43,
-        45,
-        46,
-        47,
-        -1,
-        10,
-        11,
-        12,
-        -1,
-        11,
-        20,
-        21,
-        10,
-        12,
-        21,
-        11,
-        21,
-        22,
-        21,
-        30,
-        20,
-        22,
-        30,
-        31,
-        32,
-        21,
-        32,
-        31,
-        41,
-        30,
-        32,
-        41,
-        31,
-        41,
-        -1,
-        -1,
-        -1
-    )
-    val arrR = arrayListOf(
-        15,
-        16,
-        17,
-        18,
-        22,
-        26,
-        30,
-        33,
-        41,
-        44,
-        48,
-        52,
-        56,
-        57,
-        60,
-        -1,
-        -1,
-        -1,
-        20,
-        21,
-        11,
-        1,
-        21,
-        10,
-        12,
-        1,
-        21,
-        22,
-        11,
-        1,
-        30,
-        21,
-        10,
-        30,
-        31,
-        32,
-        20,
-        22,
-        10,
-        11,
-        12,
-        32,
-        21,
-        12,
-        41,
-        31,
-        20,
-        21,
-        41,
-        30,
-        32,
-        21,
-        41,
-        31,
-        21,
-        22,
-        -1,
-        30,
-        31,
-        32,
-        -1
-    )
-
     fun re() {
         for (item in pics) {
             when(item.value){
