@@ -1,5 +1,6 @@
 package ntutifm.game.rabbit.Screen
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,19 +13,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 import ntutifm.game.rabbit.R
 import java.lang.Integer.max
 import java.lang.Integer.min
 import java.util.ArrayDeque
 import kotlin.Int.Companion.MAX_VALUE
 import kotlin.Int.Companion.MIN_VALUE
+import kotlin.concurrent.thread
+import kotlin.system.exitProcess
 
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun PlayTwo(navController: NavController) {
     val height = remember { mutableStateOf(790.dp) }
@@ -219,7 +225,6 @@ fun PlayTwo(navController: NavController) {
                 alignment = Alignment.Center,
             )
 
-
             if (current.value != dog1.value && current.value != dog2.value && current.value != dog3.value) {
                 pics[dog1.value].value = R.drawable.dog
                 pics[dog2.value].value = R.drawable.dog
@@ -264,8 +269,10 @@ fun PlayTwo(navController: NavController) {
                         }
                         dogs[dogs.indexOf(current.value)] = picNum
                         stackD.push(dogs[dogs.indexOf(picNum)])
-                        Log.e("mm", "${dogs}")
-                        if ((dogs.indexOf(9) > -1 && dogs.indexOf(10) > -1 && dogs.indexOf(11) > -1)) {
+                        Log.e("mm", dogs.toString())
+                        if ((dogs.indexOf(9) > -1 && dogs.indexOf(10) > -1 && dogs.indexOf(11) > -1) ||
+                            (dogs.indexOf(3) > -1 && dogs.indexOf(7) > -1 && dogs.indexOf(9) > -1) ||
+                            (dogs.indexOf(5) > -1 && dogs.indexOf(7) > -1 && dogs.indexOf(11) > -1) ) {
                             Log.e("mm", "DogWIN")
                             winP.value = "Dog Win"
                             showAlertDialog.value = true
@@ -280,8 +287,8 @@ fun PlayTwo(navController: NavController) {
                             re()
                             (arrD[picNum] until arrD[picNum + 1]).forEach {
                                 val linkPoint = arrD[it].div(10) * 3 + arrD[it].mod(10)
-                                //                        stack.push(linkPoint)
-                                if (dogs.indexOf(linkPoint) < 0 && linkPoint != rabbit.value) {
+                                if (dogs.indexOf(linkPoint) < 0 && linkPoint != rabbit.value &&
+                                    arrD[it] >= 0) {
                                     pics[linkPoint].value = R.drawable.selected //此處要查圖
                                 }
                             }
@@ -296,10 +303,11 @@ fun PlayTwo(navController: NavController) {
                     if (current2.value != picNum && pics[picNum].value == R.drawable.selected) {
                         stack.push(rabbit.value)
                         rabbit.value = picNum
-                        if (rabbit.value.div(3) < dog1.value.div(3) ||
-                            rabbit.value.div(3) < dog2.value.div(3) ||
-                            rabbit.value.div(3) < dog3.value.div(3) ||
-                                rabbit.value == 1) {
+                        var c = 0
+                        if (rabbit.value.div(3) < dog1.value.div(3)){c++}
+                        if (rabbit.value.div(3) < dog2.value.div(3)){c++}
+                        if (rabbit.value.div(3) < dog3.value.div(3)){c++}
+                        if (c >= 2) {
                             Log.e("mm", "RabbitWIN")
                             winP.value = "Rabbit Win"
                             showAlertDialog.value = true
@@ -315,7 +323,8 @@ fun PlayTwo(navController: NavController) {
                             (arrR[picNum] until arrR[picNum + 1]).forEach {
                                 val linkPoint = arrR[it].div(10) * 3 + arrR[it].mod(10)
                                 //                        stack.push(linkPoint)
-                                if (dogs.indexOf(linkPoint) < 0 && linkPoint != rabbit.value) {
+                                if (dogs.indexOf(linkPoint) < 0 && linkPoint != rabbit.value &&
+                                    arrR[it] >= 0) {
                                     pics[linkPoint].value = R.drawable.selected //此處要查圖
                                 }
                             }
@@ -514,7 +523,7 @@ fun PlayTwo(navController: NavController) {
                 )
             }
         }
-        Row(Modifier.padding(start = 40.dp, top = 70.dp)) {
+        Row(Modifier.padding(start = 100.dp, top = 70.dp)) {
             Text(
                 text = if (flag.value) {
                     "回合:DOG"
@@ -522,25 +531,20 @@ fun PlayTwo(navController: NavController) {
                     "回合:RABBIT"
                 }
             )
-            Image(painterResource(id = R.drawable.time), null, modifier = Modifier
-                .padding(top = 4.dp, start = 5.dp, end = 5.dp)
-                .size(22.dp)
-                .clickable {})
-            Text(timer.value, modifier = Modifier.clickable {})
             Image(
                 painterResource(id = R.drawable.backround), null, modifier = Modifier
-                    .padding(top = 4.dp, start = 5.dp, end = 5.dp)
+                    .padding(top = 4.dp, start = 20.dp, end = 5.dp)
                     .size(22.dp)
             )
             Text("悔棋", modifier = Modifier.clickable {
                 if (!stack.isEmpty()) {
-                    var before = stack.pop()
+                    val before = stack.pop()
                     if (flag.value) {
                         pics[rabbit.value].value = R.drawable.dot
                         rabbit.value = before
                         flag.value = false
                     } else {
-                        var after = stackD.pop()
+                        val after = stackD.pop()
                         pics[dogs[dogs.indexOf(after)]].value = R.drawable.dot
                         when (dogs.indexOf(after)) {
                             0 -> dog1.value = before

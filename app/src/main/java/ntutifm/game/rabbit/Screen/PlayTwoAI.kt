@@ -1,5 +1,6 @@
 package ntutifm.game.rabbit.Screen
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,16 +13,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import ntutifm.game.rabbit.R
+import java.lang.Integer.max
+import java.lang.Integer.min
 import java.util.ArrayDeque
+import kotlin.Int.Companion.MAX_VALUE
+import kotlin.Int.Companion.MIN_VALUE
+import kotlin.system.exitProcess
 
+
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun PlayDog(navController: NavController) {
+fun PlayTwoAI(navController: NavController) {
     val height = remember { mutableStateOf(790.dp) }
     val weight = remember { mutableStateOf(395.dp) }
     var timer = remember { mutableStateOf("倒數 10秒") }
@@ -35,6 +47,7 @@ fun PlayDog(navController: NavController) {
     val dog3 = remember { mutableStateOf(5) }
     val rabbit = remember { mutableStateOf(13) }
     val current = remember { mutableStateOf(50) }
+    val current2 = remember { mutableStateOf(50) }
     val sameMove = remember { mutableStateOf(0) }
     val pic01 = remember { mutableStateOf(R.drawable.dog) }
     val pic10 = remember { mutableStateOf(R.drawable.dog) }
@@ -120,6 +133,70 @@ fun PlayDog(navController: NavController) {
         -1,
         -1
     )
+    val arrR = arrayListOf(
+        15,
+        16,
+        17,
+        18,
+        22,
+        26,
+        30,
+        33,
+        41,
+        44,
+        48,
+        52,
+        56,
+        57,
+        60,
+        -1,
+        -1,
+        -1,
+        20,
+        21,
+        11,
+        1,
+        21,
+        10,
+        12,
+        1,
+        21,
+        22,
+        11,
+        1,
+        30,
+        21,
+        10,
+        30,
+        31,
+        32,
+        20,
+        22,
+        10,
+        11,
+        12,
+        32,
+        21,
+        12,
+        41,
+        31,
+        20,
+        21,
+        41,
+        30,
+        32,
+        21,
+        41,
+        31,
+        21,
+        22,
+        -1,
+        30,
+        31,
+        32,
+        -1
+    )
+
     fun re() {
         for (item in pics) {
             when(item.value){
@@ -149,104 +226,79 @@ fun PlayDog(navController: NavController) {
                 alignment = Alignment.Center,
             )
 
-            if (current.value != dog1.value && current.value != dog2.value && current.value != dog3.value) {
-                pics[dog1.value].value = R.drawable.dog
-                pics[dog2.value].value = R.drawable.dog
-                pics[dog3.value].value = R.drawable.dog
-            } else {
-                if (current.value == dog1.value) {
-                    pics[dog1.value].value = R.drawable.dogselect
-                }
-                if (current.value == dog2.value) {
-                    pics[dog2.value].value = R.drawable.dogselect
-                }
-                if (current.value == dog3.value) {
-                    pics[dog3.value].value = R.drawable.dogselect
-                }
-            }
-
-            pics[rabbit.value].value = R.drawable.rabbit
-
-            if (!flag.value && !showAlertDialog.value) {
+            if (flag.value && !showAlertDialog.value) {
+                Thread.sleep(500)
                 val board = arrayListOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-                board[dogs[0]] = 1
-                board[dogs[1]] = 1
-                board[dogs[2]] = 1
+                board[dog1.value] = 1
+                board[dog2.value] = 1
+                board[dog3.value] = 1
                 board[rabbit.value] = 2
-                stack.push(rabbit.value)
+                Log.e("mm","D")
                 Log.e("mm","$board")
-                val pre = board.indexOf(2)
-                rabbit.value = findMoveR(board)
-                pics[pre].value = R.drawable.dot
-                Log.e("mm",board.toString())
-                var c = 0
-                if (rabbit.value.div(3) < dog1.value.div(3)){c++}
-                if (rabbit.value.div(3) < dog2.value.div(3)){c++}
-                if (rabbit.value.div(3) < dog3.value.div(3)){c++}
-                if (c >= 2) {
-                    Log.e("mm", "RabbitWIN")
-                    winP.value = "Rabbit Win"
+                stack.push(rabbit.value)
+                val bestMove = findMoveD(board) //改二
+                minus[0] = minus[1]
+                minus[1] = bestMove[0]
+                current.value = bestMove[1]
+                dogs[0] = dog1.value
+                dogs[1] = dog2.value
+                dogs[2] = dog3.value
+                stack.push(dogs[dogs.indexOf(current.value)])
+                when (dogs.indexOf(current.value)) {
+                    0 -> {pics[bestMove[0]].value = R.drawable.dog
+                        dog1.value = bestMove[0]}
+                    1 -> {pics[bestMove[0]].value = R.drawable.dog
+                        dog2.value = bestMove[0]}
+                    2 -> {pics[bestMove[0]].value = R.drawable.dog
+                        dog3.value = bestMove[0]}
+                }
+                dogs[dogs.indexOf(current.value)] = bestMove[0]
+                stackD.push(dogs[dogs.indexOf(bestMove[0])])
+                Log.d("DD",dogs.toString())
+                pics[bestMove[1]].value = R.drawable.dot
+                if ((dogs.indexOf(9) > -1 && dogs.indexOf(10) > -1 && dogs.indexOf(11) > -1 ) ||
+                    (dogs.indexOf(3) > -1 && dogs.indexOf(7) > -1 && dogs.indexOf(9) > -1 && rabbit.value == 6) ||
+                    (dogs.indexOf(5) > -1 && dogs.indexOf(7) > -1 && dogs.indexOf(11) > -1 && rabbit.value == 8) ) {
+                    Log.e("mm", "DogWIN")
+                    winP.value = "Dog Win"
                     showAlertDialog.value = true
                 }
-                flag.value = true
-            }
-            fun movement(picNum: Int) {
-                if (flag.value) { //狗子
-                    if (current.value != picNum && pics[picNum].value == R.drawable.selected) {
-                        if(stack.indexOf(picNum) == 1){
-                            sameMove.value++
-                            if (sameMove.value == 9){
-                                winP.value = "Rabbit Win"
-                                showAlertDialog.value = true
-                            }
-                        }else{
-                            sameMove.value = 0
-                        }
-                        stack.push(dogs[dogs.indexOf(current.value)])
-                        when (dogs.indexOf(current.value)) {
-                            0 -> dog1.value = picNum
-                            1 -> dog2.value = picNum
-                            2 -> dog3.value = picNum
-                        }
-                        dogs[dogs.indexOf(current.value)] = picNum
-                        stackD.push(dogs[dogs.indexOf(picNum)])
-                        if ((dogs.indexOf(9) > -1 && dogs.indexOf(10) > -1 && dogs.indexOf(11) > -1) ||
-                            (dogs.indexOf(3) > -1 && dogs.indexOf(7) > -1 && dogs.indexOf(9) > -1) ||
-                            (dogs.indexOf(5) > -1 && dogs.indexOf(7) > -1 && dogs.indexOf(11) > -1) ) {
-                            Log.e("mm", "DogWIN")
-                            winP.value = "Dog Win"
-                            showAlertDialog.value = true
-                        }
-                        pics[current.value].value = R.drawable.dot
-                        re()
-                        current.value = 50
-                        flag.value = false
-                    } else {
-                        if (pics[picNum].value == R.drawable.dog) {
-                            current.value = picNum
-                            re()
-                            (arrD[picNum] until arrD[picNum + 1]).forEach {
-                                val linkPoint = arrD[it].div(10) * 3 + arrD[it].mod(10)
-                                //                        stack.push(linkPoint)
-                                if (dogs.indexOf(linkPoint) < 0 && linkPoint != rabbit.value &&
-                                    arrD[it] >= 0) {
-                                    pics[linkPoint].value = R.drawable.selected //此處要查圖
-                                }
-                            }
-
-                        } else {
-                            if (pics[picNum].value == R.drawable.dogselect) {
-                                current.value = 50
-                                re()
-                            }
-                        }
+                re()
+                current.value = 50
+                flag.value = false
+            }else{
+                if (!flag.value && !showAlertDialog.value) {
+                    Thread.sleep(500)
+                    val board = arrayListOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                    board[dog1.value] = 1
+                    board[dog2.value] = 1
+                    board[dog3.value] = 1
+                    board[rabbit.value] = 2
+                    Log.e("mm","R")
+                    Log.e("mm","$board")
+                    stack.push(rabbit.value)
+                    val pre = board.indexOf(2)
+                    rabbit.value = findMoveR(board)
+                    pics[rabbit.value].value = R.drawable.rabbit
+                    pics[pre].value = R.drawable.dot
+                    var c = 0
+                    if (rabbit.value.div(3) < dog1.value.div(3)){c++}
+                    if (rabbit.value.div(3) < dog2.value.div(3)){c++}
+                    if (rabbit.value.div(3) < dog3.value.div(3)){c++}
+                    if (c >= 2) {
+                        Log.e("mm", "RabbitWIN")
+                        winP.value = "Rabbit Win"
+                        showAlertDialog.value = true
                     }
+                    flag.value = true
                 }
             }
+
             //1
-            Box(modifier = Modifier
-                .padding(top = 599.dp, start = 159.dp)
-                .size(80.dp)
+            Box(
+                modifier = Modifier
+                    .padding(top = 599.dp, start = 159.dp)
+                    .size(80.dp)
             )
             {
                 Image(painterResource(id = pic01.value),
@@ -254,129 +306,138 @@ fun PlayDog(navController: NavController) {
                     modifier = Modifier
                         .fillMaxSize()
                         .clickable {
-                            movement(1)
                         })
             }
             //3
-            Box(modifier = Modifier
-                .padding(top = 480.dp, start = 272.dp)
-                .size(80.dp)) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 480.dp, start = 272.dp)
+                    .size(80.dp)
+            ) {
                 Image(painterResource(id = pic10.value),
                     null,
                     modifier = Modifier
                         .fillMaxSize()
                         .clickable {
-                            movement(3)
                         })
             }
             //4
-            Box(modifier = Modifier
-                .padding(top = 480.dp, start = 158.dp)
-                .size(80.dp)) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 480.dp, start = 158.dp)
+                    .size(80.dp)
+            ) {
                 Image(painterResource(id = pic11.value),
                     null,
                     modifier = Modifier
                         .fillMaxSize()
                         .clickable {
-                            movement(4)
                         })
 
             }
             //5
-            Box(modifier = Modifier
-                .padding(top = 480.dp, start = 47.dp)
-                .size(80.dp)) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 480.dp, start = 47.dp)
+                    .size(80.dp)
+            ) {
                 Image(painterResource(id = pic12.value),
                     null,
                     modifier = Modifier
                         .fillMaxSize()
                         .clickable {
-                            movement(5)
                         })
             }
 
             //6
-            Box(modifier = Modifier
-                .padding(top = 360.dp, start = 272.dp)
-                .size(80.dp)) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 360.dp, start = 272.dp)
+                    .size(80.dp)
+            ) {
                 Image(painterResource(id = pic20.value),
                     null,
                     modifier = Modifier
                         .fillMaxSize()
                         .clickable {
-                            movement(6)
                         })
             }
             //7
-            Box(modifier = Modifier
-                .padding(top = 361.dp, start = 160.dp)
-                .size(75.dp)) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 361.dp, start = 160.dp)
+                    .size(75.dp)
+            ) {
                 Image(painterResource(id = pic21.value),
                     null,
                     modifier = Modifier
                         .fillMaxSize()
                         .clickable {
-                            movement(7)
                         })
             }
             //8
-            Box(modifier = Modifier
-                .padding(top = 360.dp, start = 46.dp)
-                .size(80.dp)) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 360.dp, start = 46.dp)
+                    .size(80.dp)
+            ) {
                 Image(painterResource(id = pic22.value),
                     null,
                     modifier = Modifier
                         .fillMaxSize()
                         .clickable {
-                            movement(8)
                         })
             }
             //9
-            Box(modifier = Modifier
-                .padding(top = 244.dp, start = 271.dp)
-                .size(80.dp)) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 244.dp, start = 271.dp)
+                    .size(80.dp)
+            ) {
                 Image(painterResource(id = pic30.value),
                     null,
                     modifier = Modifier
                         .fillMaxSize()
                         .clickable {
-                            movement(9)
                         })
             }
             //10
-            Box(modifier = Modifier
-                .padding(top = 244.dp, start = 158.dp)
-                .size(80.dp)) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 244.dp, start = 158.dp)
+                    .size(80.dp)
+            ) {
                 Image(painterResource(id = pic31.value),
                     null,
                     modifier = Modifier
                         .fillMaxSize()
                         .clickable {
-                            movement(10)
                         })
             }
             //11
-            Box(modifier = Modifier
-                .padding(top = 244.dp, start = 47.dp)
-                .size(80.dp)) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 244.dp, start = 47.dp)
+                    .size(80.dp)
+            ) {
                 Image(painterResource(id = pic32.value),
                     null,
                     modifier = Modifier
                         .fillMaxSize()
                         .clickable {
-                            movement(11)
                         })
             }
             //13
-            Box(modifier = Modifier
-                .padding(top = 120.dp, start = 159.dp)
-                .size(80.dp)) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 120.dp, start = 159.dp)
+                    .size(80.dp)
+            ) {
                 Image(painterResource(id = pic41.value),
                     null,
                     modifier = Modifier
                         .fillMaxSize()
                         .clickable {
-                            movement(13)
                         })
             }
             if (showAlertDialog.value) {
@@ -406,37 +467,14 @@ fun PlayDog(navController: NavController) {
                 )
             }
         }
-        Row(Modifier.padding(start = 100.dp, top = 70.dp)) {
-            Text(text = if (flag.value) {
-                "回合:DOG"
-            } else {
-                "回合:RABBIT"
-            })
-            Image(painterResource(id = R.drawable.backround), null, modifier = Modifier
-                .padding(top = 4.dp, start = 20.dp, end = 5.dp)
-                .size(22.dp)
-                .clickable {})
-            Text("悔棋",modifier = Modifier.clickable {
-                if (!stack.isEmpty()) {
-                    var before = stack.pop()
-                    val after = stackD.pop()
-                    pics[rabbit.value].value = R.drawable.dot
-                    rabbit.value = before
-                    if (!stack.isEmpty()){
-                        before = stack.pop()
-                        pics[dogs[dogs.indexOf(after)]].value = R.drawable.dot
-                        when (dogs.indexOf(after)) {
-                            0 -> dog1.value = before
-                            1 -> dog2.value = before
-                            2 -> dog3.value = before
-                        }
-                        dogs[dogs.indexOf(after)] = before
-                        current.value = 50
-                    }
-                    re()
+        Row(Modifier.padding(start = 140.dp, top = 70.dp)) {
+            Text(
+                text = if (flag.value) {
+                    "回合:DOG"
+                } else {
+                    "回合:RABBIT"
                 }
-            })
+            )
         }
-
     }
 }

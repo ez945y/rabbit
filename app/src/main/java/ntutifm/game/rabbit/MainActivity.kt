@@ -57,11 +57,10 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,)
                         }
                         composable(route = "Setting") {
-                            Setting(
+                            PlayTwoAI(
                                 navController = navController,)
                         }
                     }
-
                 }
             }
         }

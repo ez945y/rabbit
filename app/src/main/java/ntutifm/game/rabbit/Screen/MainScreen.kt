@@ -38,15 +38,15 @@ fun MainScreen(navController: NavController) {
                         .padding(start = 20.dp, top = 15.dp,end = 20.dp, bottom = 15.dp)
                 )
             }
-            ElevatedCard(modifier = Modifier
-                .padding(top = 100.dp).clickable {navController.navigate("Setting")  }) {
-                Text(text = "設置",
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(start = 20.dp, top = 15.dp,end = 20.dp, bottom = 15.dp)
-                )
-            }
+//            ElevatedCard(modifier = Modifier
+//                .padding(top = 100.dp).clickable {navController.navigate("Setting")  }) {
+//                Text(text = "設置",
+//                    textAlign = TextAlign.Center,
+//                    fontWeight = FontWeight.Bold,
+//                    modifier = Modifier
+//                        .padding(start = 20.dp, top = 15.dp,end = 20.dp, bottom = 15.dp)
+//                )
+//            }
         }
     }
 }

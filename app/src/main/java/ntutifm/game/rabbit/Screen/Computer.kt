@@ -134,20 +134,18 @@ val arrR = arrayListOf(
 
 fun findMoveR(board: ArrayList<Int>): Int {
     var bestMove = 13 //初始化最先且最優的一步
-    var bestScore = -9999 //初始化分數
+    var bestScore = 9999 //初始化分數
     val rabbitRow = board.indexOf(2)
-    Log.e("move", "1${arrR[rabbitRow]}")
-    Log.e("move", "2${arrR[rabbitRow + 1]}") //57-58
     for (pos in arrR[rabbitRow] until arrR[rabbitRow + 1]) {
+        if (arrR[pos] == -1){continue}
         val linkPoint = arrR[pos].div(10) * 3 + arrR[pos].mod(10)
         if (board[linkPoint] != 1) { //省略狗子
             board[linkPoint] = 2
             board[rabbitRow] = 0
-            val score = minimax(isRabbit = false, board = board, depth = 5)
-            Log.e("move", "$score")
+            val score = minimax(Int.MAX_VALUE, Int.MIN_VALUE, isRabbit = false, board = board, depth = 10)
             board[linkPoint] = 0 //還原
             board[rabbitRow] = 2
-            if (score >= bestScore) {
+            if (score <= bestScore) {
                 bestScore = score
                 bestMove = linkPoint // 取最優
             }
@@ -158,91 +156,106 @@ fun findMoveR(board: ArrayList<Int>): Int {
 
 }
 
-fun findMoveG(board: ArrayList<Int>): Int {
+fun findMoveD(board: ArrayList<Int>): ArrayList<Int> {
     var bestMove = 4 //初始化最先且最優的一步
-    var bestScore = 9999 //初始化分數
-    val dogs = arrayListOf(board.indexOfFirst { it == 1 },
-        board.indexOfLast { it == 1 })
-    //找出中間的狗子
-    dogs.add(board[board.indexOfFirst { it != dogs[0] }])
+    var bestScore = -9999 //初始化分數
+    val dogs = arrayListOf<Int>()
+    for ((i, item) in board.withIndex()){
+        if (item == 1){
+            dogs.add(i)
+        }
+    }
+    var fromDog = dogs[0]
     for (dog in dogs) { // 每隻狗子
-        for (pos in arrR[dog] until arrR[dog + 1]) {
-            val linkPoint = arrR[pos].div(10) * 3 + arrR[pos].mod(10)
-            if (board[linkPoint] != 1 && board[linkPoint] != 2) { //省略狗子和兔子
+        for (pos in arrD[dog] until arrD[dog + 1]) {
+            if (arrD[pos] == -1){continue}
+            val linkPoint = arrD[pos].div(10) * 3 + arrD[pos].mod(10)
+            minus[2] = linkPoint
+            if (board[linkPoint] != 1 && board[linkPoint] != 2 && minus[0] != minus[2]) { //省略狗子和兔子
                 board[linkPoint] = 1
                 board[dog] = 0
-                val score = minimax(isRabbit = true, board = board, depth = 5)
-                Log.e("move", "$score")
+                val score = minimax(Int.MAX_VALUE, Int.MIN_VALUE, isRabbit = true, board = board, depth = 1)
                 board[linkPoint] = 0 //還原
                 board[dog] = 1
-                if (score <= bestScore) {
+                if (score >= bestScore) {
+                    fromDog = dog
                     bestScore = score
                     bestMove = linkPoint // 取最優
                 }
             }
         }
     }
-    return bestMove
-
+    Log.d("T",arrayListOf(bestMove,fromDog).toString())
+    return arrayListOf(bestMove,fromDog)
 
 }
-
-fun minimax(board: ArrayList<Int>, isRabbit: Boolean, depth: Int = 10): Int {
+var minus = arrayListOf(14,14,14)
+val colors = arrayListOf(0,11,0,18,13,18,13,11,13,18,13,18,0,11)
+fun minimax(alph: Int ,beta: Int ,board: ArrayList<Int>, isRabbit: Boolean, depth: Int = 5): Int {
+    if(depth == 0){return 0}
     val rabbit = board.indexOf(2)
     //先找出最先跟最後的狗子
-    val dogs = arrayListOf(board.indexOfFirst { it == 1 },
-        board.indexOfLast { it == 1 })
-    //找出中間的狗子
-    dogs.add(board[board.indexOfFirst { it != dogs[0] }])
-    Log.e("cry", "$board")
-    Log.e("cry2", "$depth")
-    //depth == 0
-    if (board[1] == 2 ||
-        rabbit.div(3) < dogs[0].div(3) ||
-        rabbit.div(3) < dogs[1].div(3) ||
-        rabbit.div(3) < dogs[2].div(3) ||
-        depth == 0
-    ) {
-        return 10
+    val dogs = arrayListOf<Int>()
+    for ((i, item) in board.withIndex()){
+        if (item == 1){
+            dogs.add(i)
+        }
+    }
+    var sum = 0
+    sum += colors[rabbit]
+    for (dog in dogs){
+        sum += colors[dog]
+    }
+    var c = 0
+    if (rabbit.div(3) < dogs[0].div(3)){c++}
+    if (rabbit.div(3) < dogs[1].div(3)){c++}
+    if (rabbit.div(3) < dogs[2].div(3)){c++}
+    if (c >= 2 || board[1] == 2 || board[7] == 2) {
+        return -10 + rabbit.div(3)  - c
     } else {
-        if (board[9] == 1 && board[10] == 1 && board[11] == 1) {
-            return -10
+        if ((board[9] == 1 && board[10] == 1 && board[11] == 1) ||
+            (board[3] == 1 && board[7] == 1 && board[9] == 1 && rabbit == 6) ||
+            (board[5] == 1 && board[7] == 1 && board[11] == 1 && rabbit == 8) ||
+            (board[5]==1 && board[7]==1 && board[9]==1)||
+            (board[3]==1 && board[7]==1 && board[11]==1)||
+            (dogs.maxOrNull()!!.div(3) - dogs.minOrNull()!!.div(3)) < 2
+              ) { return 10 + if(sum == 60){15}else{0} + if(board[7]==1){5}else{0}
         } else {
             if (isRabbit) { //兔子
-                var bestScore = -99999 //初始化
+                var a = alph
                 for (pos in arrR[rabbit] until arrR[rabbit + 1]) {
+                    if (arrR[pos] == -1){continue}
                     val linkPoint = arrR[pos].div(10) * 3 + arrR[pos].mod(10)
                     if (board[linkPoint] != 1) { //省略狗子
                         board[linkPoint] = 2
                         board[rabbit] = 0
-                        val score = minimax(board, false, depth - 1)
+                        a = min(a, minimax(a, beta, board, false, depth - 1))
                         board[linkPoint] = 0 //還原
                         board[rabbit] = 2
-                        bestScore = max(bestScore, score)
+                        if(a >= beta){ break }
                     }
                 }
-                return bestScore
+                return a
             } else { //狗子
-                var bestScore = 99999 //初始化
-
+                var b = beta
                 for (dog in dogs) { // 每隻狗子
                     for (pos in arrD[dog] until arrD[dog + 1]) {
+                        if (arrD[pos] == -1){continue}
                         val linkPoint = arrD[pos].div(10) * 3 + arrD[pos].mod(10)
                         if (board[linkPoint] != 1 && board[linkPoint] != 2) { //省略狗子跟兔子
                             board[linkPoint] = 1
                             board[dog] = 0
-                            val score = minimax(board, true, depth - 1)
+                            b = max(b, minimax(alph, b, board, true, depth - 1))
                             board[linkPoint] = 0 //還原
                             board[dog] = 1
-                            bestScore = min(bestScore, score) //取最優
+                            if(alph >= b){ break }
                         }
                     }
                 }
-                return bestScore
+                return b
             }
         }
     }
-    return 0
 }
 
 @Composable
