@@ -27,6 +27,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <service android:name="ntutifm.game.rabbit.Screen.MyService" />
     </application>
 
 </manifest>

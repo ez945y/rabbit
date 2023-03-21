@@ -5,10 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ntutifm.game.rabbit.R
+import ntutifm.game.rabbit.serviceStatus
 import java.util.ArrayDeque
 
 @Composable
@@ -384,6 +382,15 @@ fun PlayDog(navController: NavController) {
                     re()
                 }
             })
+            if (serviceStatus.value) {
+                Icon(painterResource(id = R.drawable.ic_baseline_volume_up_24),
+                    null,
+                    modifier = Modifier.padding(top = 4.dp, start = 15.dp).clickable { serviceStatus.value = !serviceStatus.value })
+            }else{
+                Icon(painterResource(id = R.drawable.ic_baseline_volume_off_24),
+                    null,
+                    modifier = Modifier.padding(top = 4.dp, start = 15.dp).clickable { serviceStatus.value = !serviceStatus.value })
+            }
         }
 
     }

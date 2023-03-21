@@ -6,10 +6,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ntutifm.game.rabbit.R
+import ntutifm.game.rabbit.serviceStatus
 import java.util.*
 
 
@@ -72,9 +71,10 @@ fun PlayTwo(navController: NavController) {
         pic41,
         pic41
     )
+
     fun re() {
         for (item in pics) {
-            when(item.value){
+            when (item.value) {
                 R.drawable.selected -> item.value = R.drawable.dot
                 R.drawable.dogselect -> item.value = R.drawable.dog
                 R.drawable.rabbitselect -> item.value = R.drawable.rabbit
@@ -128,13 +128,13 @@ fun PlayTwo(navController: NavController) {
 
                 if (flag.value) { //狗子
                     if (current.value != picNum && pics[picNum].value == R.drawable.selected) {
-                        if(stack.indexOf(picNum) == 1){
+                        if (stack.indexOf(picNum) == 1) {
                             sameMove.value++
-                            if (sameMove.value == 9){
+                            if (sameMove.value == 9) {
                                 winP.value = "Rabbit Win"
                                 showAlertDialog.value = true
                             }
-                        }else{
+                        } else {
                             sameMove.value = 0
                         }
                         stack.push(dogs[dogs.indexOf(current.value)])
@@ -148,7 +148,8 @@ fun PlayTwo(navController: NavController) {
                         Log.e("mm", dogs.toString())
                         if ((dogs.indexOf(9) > -1 && dogs.indexOf(10) > -1 && dogs.indexOf(11) > -1) ||
                             (dogs.indexOf(3) > -1 && dogs.indexOf(7) > -1 && dogs.indexOf(9) > -1) ||
-                            (dogs.indexOf(5) > -1 && dogs.indexOf(7) > -1 && dogs.indexOf(11) > -1) ) {
+                            (dogs.indexOf(5) > -1 && dogs.indexOf(7) > -1 && dogs.indexOf(11) > -1)
+                        ) {
                             Log.e("mm", "DogWIN")
                             winP.value = "Dog Win"
                             showAlertDialog.value = true
@@ -164,7 +165,8 @@ fun PlayTwo(navController: NavController) {
                             (arrD[picNum] until arrD[picNum + 1]).forEach {
                                 val linkPoint = arrD[it].div(10) * 3 + arrD[it].mod(10)
                                 if (dogs.indexOf(linkPoint) < 0 && linkPoint != rabbit.value &&
-                                    arrD[it] >= 0) {
+                                    arrD[it] >= 0
+                                ) {
                                     pics[linkPoint].value = R.drawable.selected //此處要查圖
                                 }
                             }
@@ -180,9 +182,15 @@ fun PlayTwo(navController: NavController) {
                         stack.push(rabbit.value)
                         rabbit.value = picNum
                         var c = 0
-                        if (rabbit.value.div(3) < dog1.value.div(3)){c++}
-                        if (rabbit.value.div(3) < dog2.value.div(3)){c++}
-                        if (rabbit.value.div(3) < dog3.value.div(3)){c++}
+                        if (rabbit.value.div(3) < dog1.value.div(3)) {
+                            c++
+                        }
+                        if (rabbit.value.div(3) < dog2.value.div(3)) {
+                            c++
+                        }
+                        if (rabbit.value.div(3) < dog3.value.div(3)) {
+                            c++
+                        }
                         if (c >= 2) {
                             Log.e("mm", "RabbitWIN")
                             winP.value = "Rabbit Win"
@@ -200,7 +208,8 @@ fun PlayTwo(navController: NavController) {
                                 val linkPoint = arrR[it].div(10) * 3 + arrR[it].mod(10)
                                 //                        stack.push(linkPoint)
                                 if (dogs.indexOf(linkPoint) < 0 && linkPoint != rabbit.value &&
-                                    arrR[it] >= 0) {
+                                    arrR[it] >= 0
+                                ) {
                                     pics[linkPoint].value = R.drawable.selected //此處要查圖
                                 }
                             }
@@ -435,6 +444,15 @@ fun PlayTwo(navController: NavController) {
                     re()
                 }
             })
+            if (serviceStatus.value) {
+                Icon(painterResource(id = R.drawable.ic_baseline_volume_up_24),
+                    null,
+                    modifier = Modifier.padding(top = 4.dp, start = 15.dp).clickable {serviceStatus.value = !serviceStatus.value })
+            }else{
+                Icon(painterResource(id = R.drawable.ic_baseline_volume_off_24),
+                    null,
+                    modifier = Modifier.padding(top = 4.dp, start = 15.dp).clickable {serviceStatus.value = !serviceStatus.value })
+            }
         }
     }
 }
