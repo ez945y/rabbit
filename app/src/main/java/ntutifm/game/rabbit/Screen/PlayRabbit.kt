@@ -1,6 +1,5 @@
 package ntutifm.game.rabbit.Screen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ntutifm.game.rabbit.R
 import ntutifm.game.rabbit.serviceStatus
-import java.util.ArrayDeque
+import java.util.*
 
 @Composable
 fun PlayRabbit(navController: NavController) {
@@ -118,8 +117,6 @@ fun PlayRabbit(navController: NavController) {
                 board[dogs[1]] = 1
                 board[dogs[2]] = 1
                 board[rabbit.value] = 2
-                stack.push(rabbit.value)
-                Log.e("mm","$board")
                 val bestMove = findMoveD(board) //改二
                 minus[0] = minus[1]
                 minus[1] = bestMove[0]
@@ -133,11 +130,10 @@ fun PlayRabbit(navController: NavController) {
                 dogs[dogs.indexOf(current.value)] = bestMove[0]
                 stackD.push(dogs[dogs.indexOf(bestMove[0])])
                 pics[bestMove[1]].value = R.drawable.dot
-                Log.e("mm",board.toString())
-                if ((dogs.indexOf(9) > -1 && dogs.indexOf(10) > -1 && dogs.indexOf(11) > -1 ) ||
+                if ((dogs.indexOf(9) > -1 && dogs.indexOf(10) > -1 && dogs.indexOf(11) > -1) ||
                     (dogs.indexOf(3) > -1 && dogs.indexOf(7) > -1 && dogs.indexOf(9) > -1 && rabbit.value == 6) ||
-                    (dogs.indexOf(5) > -1 && dogs.indexOf(7) > -1 && dogs.indexOf(11) > -1 && rabbit.value == 8) ) {
-                    Log.e("mm", "DogWIN")
+                    (dogs.indexOf(5) > -1 && dogs.indexOf(7) > -1 && dogs.indexOf(11) > -1 && rabbit.value == 8)
+                ) {
                     winP.value = "Dog Win"
                     showAlertDialog.value = true
                 }
@@ -153,11 +149,16 @@ fun PlayRabbit(navController: NavController) {
                         stack.push(rabbit.value)
                         rabbit.value = picNum
                         var c = 0
-                        if (rabbit.value.div(3) < dog1.value.div(3)){c++}
-                        if (rabbit.value.div(3) < dog2.value.div(3)){c++}
-                        if (rabbit.value.div(3) < dog3.value.div(3)){c++}
+                        if (rabbit.value.div(3) < dog1.value.div(3)) {
+                            c++
+                        }
+                        if (rabbit.value.div(3) < dog2.value.div(3)) {
+                            c++
+                        }
+                        if (rabbit.value.div(3) < dog3.value.div(3)) {
+                            c++
+                        }
                         if (c >= 2) {
-                            Log.e("mm", "RabbitWIN")
                             winP.value = "Rabbit Win"
                             showAlertDialog.value = true
                         }
@@ -171,9 +172,9 @@ fun PlayRabbit(navController: NavController) {
                             re()
                             (arrR[picNum] until arrR[picNum + 1]).forEach {
                                 val linkPoint = arrR[it].div(10) * 3 + arrR[it].mod(10)
-                                //                        stack.push(linkPoint)
                                 if (dogs.indexOf(linkPoint) < 0 && linkPoint != rabbit.value &&
-                                    arrR[it] >= 0) {
+                                    arrR[it] >= 0
+                                ) {
                                     pics[linkPoint].value = R.drawable.selected //此處要查圖
                                 }
                             }
@@ -330,10 +331,10 @@ fun PlayRabbit(navController: NavController) {
                         showAlertDialog.value = false
                     },
                     title = {
-                        Text("結束",Modifier.padding(start = 80.dp))
+                        Text("結束", Modifier.padding(start = 80.dp))
                     },
                     text = {
-                        Text(winP.value,Modifier.padding(start = 70.dp))
+                        Text(winP.value, Modifier.padding(start = 70.dp))
                     },
                     confirmButton = {
                         Button(
@@ -356,13 +357,10 @@ fun PlayRabbit(navController: NavController) {
             } else {
                 "回合:RABBIT"
             })
-            Image(painterResource(id = R.drawable.backround), null, modifier = Modifier
-                .padding(top = 4.dp, start = 20.dp, end = 5.dp)
-                .size(22.dp))
-            Text("悔棋",modifier = Modifier.clickable {
-                if (!stack.isEmpty() ) {
-                    var before = stack.pop()
-                    val after = stackD.pop()
+            Row(modifier = Modifier.clickable {
+                if (!stack.isEmpty()) {
+                    var before = stack.pop() //狗
+                    val after = stackD.pop() //狗
 
                     pics[dogs[dogs.indexOf(after)]].value = R.drawable.dot
                     when (dogs.indexOf(after)) {
@@ -371,6 +369,8 @@ fun PlayRabbit(navController: NavController) {
                         2 -> dog3.value = before
                     }
                     dogs[dogs.indexOf(after)] = before
+
+
                     before = stack.pop()
                     pics[rabbit.value].value = R.drawable.dot
                     rabbit.value = before
@@ -379,15 +379,25 @@ fun PlayRabbit(navController: NavController) {
 
                     re()
                 }
-            })
+            }) {
+                Image(painterResource(id = R.drawable.backround), null, modifier = Modifier
+                    .padding(top = 4.dp, start = 20.dp, end = 5.dp)
+                    .size(22.dp))
+                Text("悔棋")
+            }
+
             if (serviceStatus.value) {
                 Icon(painterResource(id = R.drawable.ic_baseline_volume_up_24),
                     null,
-                    modifier = Modifier.padding(top = 4.dp, start = 15.dp).clickable { serviceStatus.value = !serviceStatus.value })
-            }else{
+                    modifier = Modifier
+                        .padding(top = 4.dp, start = 15.dp)
+                        .clickable { serviceStatus.value = !serviceStatus.value })
+            } else {
                 Icon(painterResource(id = R.drawable.ic_baseline_volume_off_24),
                     null,
-                    modifier = Modifier.padding(top = 4.dp, start = 15.dp).clickable { serviceStatus.value = !serviceStatus.value })
+                    modifier = Modifier
+                        .padding(top = 4.dp, start = 15.dp)
+                        .clickable { serviceStatus.value = !serviceStatus.value })
             }
         }
     }

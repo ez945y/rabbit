@@ -1,12 +1,10 @@
 package ntutifm.game.rabbit.Screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -145,12 +143,10 @@ fun PlayTwo(navController: NavController) {
                         }
                         dogs[dogs.indexOf(current.value)] = picNum
                         stackD.push(dogs[dogs.indexOf(picNum)])
-                        Log.e("mm", dogs.toString())
                         if ((dogs.indexOf(9) > -1 && dogs.indexOf(10) > -1 && dogs.indexOf(11) > -1) ||
                             (dogs.indexOf(3) > -1 && dogs.indexOf(7) > -1 && dogs.indexOf(9) > -1) ||
                             (dogs.indexOf(5) > -1 && dogs.indexOf(7) > -1 && dogs.indexOf(11) > -1)
                         ) {
-                            Log.e("mm", "DogWIN")
                             winP.value = "Dog Win"
                             showAlertDialog.value = true
                         }
@@ -192,7 +188,6 @@ fun PlayTwo(navController: NavController) {
                             c++
                         }
                         if (c >= 2) {
-                            Log.e("mm", "RabbitWIN")
                             winP.value = "Rabbit Win"
                             showAlertDialog.value = true
                         }
@@ -416,12 +411,7 @@ fun PlayTwo(navController: NavController) {
                     "回合:RABBIT"
                 }
             )
-            Image(
-                painterResource(id = R.drawable.backround), null, modifier = Modifier
-                    .padding(top = 4.dp, start = 20.dp, end = 5.dp)
-                    .size(22.dp)
-            )
-            Text("悔棋", modifier = Modifier.clickable {
+            Row(modifier = Modifier.clickable {
                 if (!stack.isEmpty()) {
                     val before = stack.pop()
                     if (flag.value) {
@@ -443,15 +433,26 @@ fun PlayTwo(navController: NavController) {
                     current2.value = 50
                     re()
                 }
-            })
+            }) {
+                Image(
+                    painterResource(id = R.drawable.backround), null, modifier = Modifier
+                        .padding(top = 4.dp, start = 20.dp, end = 5.dp)
+                        .size(22.dp)
+                )
+                Text("悔棋")
+            }
             if (serviceStatus.value) {
                 Icon(painterResource(id = R.drawable.ic_baseline_volume_up_24),
                     null,
-                    modifier = Modifier.padding(top = 4.dp, start = 15.dp).clickable {serviceStatus.value = !serviceStatus.value })
-            }else{
+                    modifier = Modifier
+                        .padding(top = 4.dp, start = 15.dp)
+                        .clickable { serviceStatus.value = !serviceStatus.value })
+            } else {
                 Icon(painterResource(id = R.drawable.ic_baseline_volume_off_24),
                     null,
-                    modifier = Modifier.padding(top = 4.dp, start = 15.dp).clickable {serviceStatus.value = !serviceStatus.value })
+                    modifier = Modifier
+                        .padding(top = 4.dp, start = 15.dp)
+                        .clickable { serviceStatus.value = !serviceStatus.value })
             }
         }
     }
