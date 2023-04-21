@@ -5,6 +5,7 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.IBinder
 import android.provider.Settings
+import ntutifm.game.rabbit.R
 
 class MyService : Service() {
     // declaring object of MediaPlayer
@@ -17,7 +18,7 @@ class MyService : Service() {
         // creating a media player which
         // will play the audio of Default
         // ringtone in android device
-        player = MediaPlayer.create(this, Settings.System.DEFAULT_RINGTONE_URI)
+        player = MediaPlayer.create(this, R.raw.m)
 
         // providing the boolean
         // value as true to play

@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -15,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ntutifm.game.rabbit.R
+import ntutifm.game.rabbit.isStart
 import kotlin.math.max
 import kotlin.math.min
 
@@ -259,7 +261,32 @@ fun minimax(alph: Int ,beta: Int ,board: ArrayList<Int>, isRabbit: Boolean, dept
 
 @Composable
 fun Computer(navController: NavController) {
+    isStart.value = false
     Box {
+        Box(modifier = Modifier
+            .padding(top = 70.dp, start = LocalConfiguration.current.screenWidthDp.dp - 32.dp)
+            .size(22.dp)
+        ){
+            Image(painterResource(id = R.drawable.outline_power_settings_new_black_48),
+                null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable {
+                        exitAPP()
+                    })
+        }
+        Box(modifier = Modifier
+            .padding(top = 70.dp, start = 10.dp)
+            .size(22.dp)
+        ){
+            Image(painterResource(id = R.drawable.outline_undo_black_48),
+                null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable {
+                        navController.popBackStack()
+                    })
+        }
         Column(modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = "選擇角色",
@@ -267,10 +294,10 @@ fun Computer(navController: NavController) {
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
-                    .padding(top = 250.dp)
+                    .padding(top = LocalConfiguration.current.screenHeightDp.dp / 4)
             )
             ElevatedCard(modifier = Modifier
-                .padding(top = 100.dp)
+                .padding(top = LocalConfiguration.current.screenHeightDp.dp / 8)
                 .clickable { navController.navigate("PlayDog") }) {
                 Row(modifier = Modifier
                     .padding(top = 10.dp, bottom = 10.dp)){
@@ -284,7 +311,7 @@ fun Computer(navController: NavController) {
                 )}
             }
             ElevatedCard(modifier = Modifier
-                .padding(top = 100.dp)
+                .padding(top = LocalConfiguration.current.screenHeightDp.dp / 8)
                 .clickable { navController.navigate("PlayRabbit") }) {
                 Row(modifier = Modifier
                     .padding(top = 10.dp, bottom = 10.dp)){
@@ -298,6 +325,7 @@ fun Computer(navController: NavController) {
                     )
                 }
             }
+
         }
     }
 }
